@@ -2,12 +2,10 @@
 #include <getopt.h>
 #include <stdio.h>
 
-/* int getopt(int argc, char * const argv[], const char *optstring); */
 void testsuite_getopt() {}
 
 void manual_test_getopt(int argc, char* const argv[]) {
     int opt;
-    /* char *arg; */
     
     printf("\nGETOPT\n");
 
@@ -18,7 +16,6 @@ void manual_test_getopt(int argc, char* const argv[]) {
         printf("%c (%d) = '%s'\n", opt, optind, optarg);
     }
     printf("optind = %d\n", optind);
-    /* while ((arg = optparse_arg(&options))) { */
     while (argv[optind]) {
         printf("argument: %s\n", argv[optind++]);
     }
