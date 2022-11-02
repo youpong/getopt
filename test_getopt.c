@@ -1,4 +1,3 @@
-//#include <bits/getopt_ext.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <stdio.h>
