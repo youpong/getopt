@@ -7,7 +7,7 @@ void testsuite_getopt() {}
 
 void manual_test_getopt(int argc, char* const argv[]) {
     int opt;
-    opterr = 0;
+    opterr = 0; // suppress error message
     printf("\nGETOPT\n");
 
     while ((opt = getopt(argc, argv, "abc:d::")) != -1) {
