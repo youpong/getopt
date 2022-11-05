@@ -21,17 +21,11 @@ void vec_push(Vector *vec, void *elem) {
   vec->data[vec->len++] = elem;
 }
 
-void *vec_pop(Vector *vec) {
-  return vec->data[--vec->len];
-}
+void *vec_pop(Vector *vec) { return vec->data[--vec->len]; }
 
-void *vec_last(Vector *vec) {
-  return vec->data[vec->len - 1];
-}
+void *vec_last(Vector *vec) { return vec->data[vec->len - 1]; }
 
-void *vec_at(Vector *vec, int index) {
-  return vec->data[index];
-}
+void *vec_at(Vector *vec, int index) { return vec->data[index]; }
 
 Map *new_map() {
   Map *map = malloc(sizeof(Map));
@@ -54,9 +48,7 @@ void *map_get(Map *map, char *key) {
   return NULL;
 }
 
-Vector *map_keys(Map *map) {
-  return map->keys;
-}
+Vector *map_keys(Map *map) { return map->keys; }
 
 int *intdup(int n) {
   int *num = malloc(sizeof(int));
