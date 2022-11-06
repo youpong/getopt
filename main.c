@@ -1,4 +1,4 @@
-void manual_test_getopt(int argc, char *const argv[]);
+#include "main.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 1) {

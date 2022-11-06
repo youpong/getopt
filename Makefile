@@ -17,3 +17,5 @@ format:
 
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^
+
+main.o: main.h
