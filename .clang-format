@@ -2,4 +2,5 @@
 AlwaysBreakTemplateDeclarations: Yes
 AllowShortFunctionsOnASingleLine: true
 BasedOnStyle: LLVM
-ColumnLimit: 74
+ColumnLimit:    80
+IndentWidth:     4
