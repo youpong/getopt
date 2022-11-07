@@ -8,10 +8,12 @@ FORMATTER = clang-format-14 -i
 .PHONY: all clean check format
 
 all: $(TARGET)
-clean:
-	rm -f $(TARGET) *.o
 check: all
 	./$(TARGET)
+clean:
+	rm -f $(TARGET) *.o
+gen_db:
+	./gen_cmpl_db.sh
 format:
 	$(FORMATTER) $(SRCS)
 
