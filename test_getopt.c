@@ -37,11 +37,11 @@ static int get_argc(char *argv[]) {
 
 int testsuite_getopt() {
     struct config {
-        char amend;
-        char brief;
-        char *color;
-        int delay;
-        int erase;
+        char amend;  // OPTARG_NONE
+        char brief;  // OPTARG_NONE
+        char *color; // OPTARG_OPTIONAL
+        int delay;   // OPTARG_REQUIRED
+        int erase;   // OPTARG_NONE
     };
     struct {
         char *argv[8];
@@ -49,11 +49,18 @@ int testsuite_getopt() {
         char *args[8];
         char *err;
     } t[] = {
-        {{"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0},
-        {{"", "-a", "-b", "-c", "-d", "10", "-e", 0},
-         {1, 1, "", 10, 1},
-         {0},
-         0},
+        {
+            {"", "--", "foobar", 0},
+            {0, 0, 0, 0, 0},
+            {"foobar", 0},
+            0
+        },
+        {
+            {"", "-a", "-b", "-c", "-d", "10", "-e", 0},
+            {1, 1, "", 10, 1},
+            {0},
+            0
+        },
         {{"", "--amend", "--brief", "--color", "--delay", "10", "--erase", 0},
          {1, 1, "", 10, 1},
          {0},
@@ -108,7 +115,10 @@ int testsuite_getopt() {
         struct config conf = {0, 0, 0, 0, 0};
 
         int argc = get_argc(t[i].argv);
-        while ((opt = getopt(argc, t[i].argv, "abc:d::")) != -1) {
+        char **argv = t[i].argv;
+
+        optind = 1;
+        while ((opt = getopt(argc, t[i].argv, ":abc::d:e")) != -1) {
             switch (opt) {
             case 'a':
                 conf.amend = 1;
@@ -187,7 +197,7 @@ int testsuite_getopt() {
             }
 
             for (j = 0; t[i].args[j]; j++) {
-                arg = ""; // optparse_arg(&options);
+                arg = argv[optind++];
                 if (!arg || strcmp(arg, t[i].args[j])) {
                     nfails++;
                     printf("FAIL (%2d): expected arg %s, got %s\n", i,

@@ -10,7 +10,7 @@ FORMATTER = clang-format-14 -i
 all: $(TARGET)
 clean:
 	rm -f $(TARGET) *.o
-check:
+check: all
 	./$(TARGET)
 format:
 	$(FORMATTER) $(SRCS)
