@@ -50,63 +50,84 @@ int testsuite_getopt() {
         char *args[8];
         char *err;
     } t[] = {
-        // clang-format 0ff
-        {"0", {"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0},
-        {"1",
-         {"", "-a", "-b", "-c", "-d", "10", "-e", 0},
-         {1, 1, "", 10, 1},
-         {0},
-         0},
-        /* {
+        // clang-format off
+        { "0",
+            {"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0
+        },
+        { "1",
+            {"", "-a", "-b", "-c", "-d", "10", "-e", 0},
+            {1, 1, "", 10, 1},
+            {0},
+            0
+        },
+        /* { "2",
             {"", "--amend", "--brief", "--color", "--delay", "10", "--erase",
            0}, {1, 1, "", 10, 1}, {0}, 0},*/
-        {"3",
-         {"", "-a", "-b", "-cred", "-d", "10", "-e", 0},
-         {1, 1, "red", 10, 1},
-         {0},
-         0},
-        {"4",
-         {"", "-abcblue", "-d10", "foobar", 0},
-         {1, 1, "blue", 10, 0},
-         {"foobar", 0},
-         0},
+        { "3",
+            {"", "-a", "-b", "-cred", "-d", "10", "-e", 0},
+            {1, 1, "red", 10, 1},
+            {0},
+            0
+        },
+        { "4",
+            {"", "-abcblue", "-d10", "foobar", 0},
+            {1, 1, "blue", 10, 0},
+            {"foobar", 0},
+            0
+        },
         /* { "5", {"", "--color=red", "-d", "10", "--", "foobar", 0},
          {0, 0, "red", 10, 0},
          {"foobar", 0},
          0}, */
-        {"6", {"", "-eeeeee", 0}, {0, 0, 0, 0, 6}, {0}, 0},
-        /*
+        { "6",
+            {"", "-eeeeee", 0},
+            {0, 0, 0, 0, 6},
+            {0},
+            0
+        },
         { "7",
-          {"", "--delay", 0},
-          {0, 0, 0, 0, 0},
-          {0},
-          OPTPARSE_MSG_MISSING
+            {"", "-d", 0},
+            {0, 0, 0, 0, 0},
+            {0},
+            ": missing optarg -- 'd'\n"
+        },
+        { "70",
+            {"", "-d", "-e", 0},
+            {0, 0, 0, 0, 0},
+            {0},
+            0
         },
         { "8",
-          {"", "--foo", "bar", 0},
-          {0, 0, 0, 0, 0},
-          {"--foo", "bar", 0},
-          OPTPARSE_MSG_INVALID
+            {"", "-f", 0},
+            {0, 0, 0, 0, 0},
+            {0},
+            ": invalid option -- 'f'\n"
         },
-        { "9",
-          {"", "-x", 0},
-          {0, 0, 0, 0, 0},
-          {"-x", 0},
-          OPTPARSE_MSG_INVALID
-        },*/
-        {"10", {"", "-", 0}, {0, 0, 0, 0, 0}, {"-", 0}, 0},
-        {"11",
-         {"", "-e", "foo", "bar", "baz", "-a", "quux", 0},
-         {1, 0, 0, 0, 1},
-         {"foo", "bar", "baz", "quux", 0},
-         0},
+        { "80",
+            {"", "-f", "foo", 0},
+            {0, 0, 0, 0, 0},
+            {"foo", 0},
+            ": invalid option -- 'f'\n"
+        },
+        { "10",
+            {"", "-", 0},
+            {0, 0, 0, 0, 0},
+            {"-", 0},
+            0
+        },
+        { "11",
+            {"", "-e", "foo", "bar", "baz", "-a", "quux", 0},
+            {1, 0, 0, 0, 1},
+            {"foo", "bar", "baz", "quux", 0},
+            0
+        },
         /* { "12",
           {"", "foo", "--delay", "1234", "bar", "-cred", 0},
           {0, 0, "red", 1234, 0},
           {"foo", "bar", 0},
           0
         },*/
-    }; // clang-format 0n
+    }; // clang-format on
     int ntests = sizeof(t) / sizeof(*t);
     int i, nfails = 0;
 
@@ -137,12 +158,13 @@ int testsuite_getopt() {
                 conf.erase++;
                 break;
             case '?': // unknown opt
-                // TODO
+                err = malloc(strlen(argv[0]) + 256);
+                sprintf(err, "%s: invalid option -- '%c'\n", argv[0], optopt);
                 break;
             case ':': // missing optarg
-                // TODO
+                err = malloc(strlen(argv[0]) + 256);
+                sprintf(err, "%s: missing optarg -- '%c'\n", argv[0], optopt);
                 break;
-                //                err = options.errmsg;
             }
         }
 
@@ -206,12 +228,11 @@ int testsuite_getopt() {
                            t[i].args[j], arg ? arg : "(nil)");
                 }
             }
-            /*
-            if ((arg = optparse_arg(&options))) {
+            if ((arg = argv[optind])) {
                 nfails++;
-                printf("FAIL (%s): expected no more args, got %s\n",
-                       t[i].name, arg);
-            }*/
+                printf("FAIL (%s): expected no more args, got %s\n", t[i].name,
+                       arg);
+            }
         }
     }
 
