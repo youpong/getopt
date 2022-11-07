@@ -1,0 +1,16 @@
+name: Workflow for Codecov
+on: [push, pull_request]
+jobs:
+  run-gcc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Compile calculator
+        run: make COVERAGE_TEST=1
+      - name: Run tests
+        run: make check
+      - name: gcov  
+        run: make gcov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
