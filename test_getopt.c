@@ -44,61 +44,73 @@ int testsuite_getopt() {
         int erase;   // OPTARG_NONE
     };
     struct {
+        char *name;
         char *argv[8];
         struct config conf;
         char *args[8];
         char *err;
-    } t[] = {
-        {{"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0},
-        {{"", "-a", "-b", "-c", "-d", "10", "-e", 0},
-         {1, 1, "", 10, 1},
-         {0},
-         0},
-        {{"", "--amend", "--brief", "--color", "--delay", "10", "--erase", 0},
-         {1, 1, "", 10, 1},
-         {0},
-         0},
-        {{"", "-a", "-b", "-cred", "-d", "10", "-e", 0},
+    } t[] = { // clang-format 0ff
+        { "0",
+            {"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0},
+        { "1",
+            {"", "-a", "-b", "-c", "-d", "10", "-e", 0},
+            {1, 1, "", 10, 1},
+            {0},
+            0},
+        /* { 
+            {"", "--amend", "--brief", "--color", "--delay", "10", "--erase", 0},
+            {1, 1, "", 10, 1},
+            {0},
+            0},*/
+        { "3",
+            {"", "-a", "-b", "-cred", "-d", "10", "-e", 0},
          {1, 1, "red", 10, 1},
          {0},
          0},
-        {{"", "-abcblue", "-d10", "foobar", 0},
+        { "4", {"", "-abcblue", "-d10", "foobar", 0},
          {1, 1, "blue", 10, 0},
          {"foobar", 0},
          0},
-        {{"", "--color=red", "-d", "10", "--", "foobar", 0},
+        { "5", {"", "--color=red", "-d", "10", "--", "foobar", 0},
          {0, 0, "red", 10, 0},
          {"foobar", 0},
          0},
-        {{"", "-eeeeee", 0}, {0, 0, 0, 0, 6}, {0}, 0}, /*
-                                                     {
-                                                         {"", "--delay", 0},
-                                                         {0, 0, 0, 0, 0},
-                                                         {0},
-                                                         OPTPARSE_MSG_MISSING
-                                                     },
-                                                     {
-                                                         {"", "--foo", "bar",
-                                                     0}, {0, 0, 0, 0, 0},
-                                                         {"--foo", "bar", 0},
-                                                         OPTPARSE_MSG_INVALID
-                                                     },
-                                                     {
-                                                         {"", "-x", 0},
-                                                         {0, 0, 0, 0, 0},
-                                                         {"-x", 0},
-                                                         OPTPARSE_MSG_INVALID
-                                                         },*/
-        {{"", "-", 0}, {0, 0, 0, 0, 0}, {"-", 0}, 0},
-        {{"", "-e", "foo", "bar", "baz", "-a", "quux", 0},
-         {1, 0, 0, 0, 1},
-         {"foo", "bar", "baz", "quux", 0},
-         0},
-        {{"", "foo", "--delay", "1234", "bar", "-cred", 0},
-         {0, 0, "red", 1234, 0},
-         {"foo", "bar", 0},
-         0},
-    };
+        { "6", {"", "-eeeeee", 0}, {0, 0, 0, 0, 6}, {0}, 0},
+        /*
+        { "7",
+          {"", "--delay", 0},
+          {0, 0, 0, 0, 0},
+          {0},
+          OPTPARSE_MSG_MISSING
+        },
+        { "8",
+          {"", "--foo", "bar", 0},
+          {0, 0, 0, 0, 0},
+          {"--foo", "bar", 0},
+          OPTPARSE_MSG_INVALID
+        },
+        { "9",
+          {"", "-x", 0},
+          {0, 0, 0, 0, 0},
+          {"-x", 0},
+          OPTPARSE_MSG_INVALID
+        },*/
+        { "10",
+          {"", "-", 0}, {0, 0, 0, 0, 0}, {"-", 0}, 0
+        },
+        { "11",
+          {"", "-e", "foo", "bar", "baz", "-a", "quux", 0},
+          {1, 0, 0, 0, 1},
+          {"foo", "bar", "baz", "quux", 0},
+          0
+        },
+        { "12",
+          {"", "foo", "--delay", "1234", "bar", "-cred", 0},
+          {0, 0, "red", 1234, 0},
+          {"foo", "bar", 0},
+          0
+        },
+    }; // clang-format 0n
     int ntests = sizeof(t) / sizeof(*t);
     int i, nfails = 0;
 
@@ -140,69 +152,69 @@ int testsuite_getopt() {
 
         if (conf.amend != t[i].conf.amend) {
             nfails++;
-            printf("FAIL (%2d): expected amend %d, got %d\n", i,
+            printf("FAIL (%s): expected amend %d, got %d\n", t[i].name,
                    t[i].conf.amend, conf.amend);
         }
 
         if (conf.brief != t[i].conf.brief) {
             nfails++;
-            printf("FAIL (%2d): expected brief %d, got %d\n", i,
+            printf("FAIL (%s): expected brief %d, got %d\n", t[i].name,
                    t[i].conf.brief, conf.brief);
         }
 
         if (t[i].conf.color) {
             if (!conf.color || strcmp(conf.color, t[i].conf.color)) {
                 nfails++;
-                printf("+FAIL (%2d): expected color %s, got %s\n", i,
+                printf("+FAIL (%s): expected color %s, got %s\n", t[i].name,
                        t[i].conf.color, conf.color ? conf.color : "(nil)");
             }
         } else {
             if (conf.color) {
                 nfails++;
-                printf("FAIL (%2d): expected no color, got %s\n", i,
+                printf("FAIL (%s): expected no color, got %s\n", t[i].name,
                        conf.color);
             }
         }
 
         if (conf.delay != t[i].conf.delay) {
             nfails++;
-            printf("FAIL (%2d): expected delay %d, got %d\n", i,
+            printf("FAIL (%s): expected delay %d, got %d\n", t[i].name,
                    t[i].conf.delay, conf.delay);
         }
 
         if (conf.erase != t[i].conf.erase) {
             nfails++;
-            printf("FAIL (%2d): expected erase %d, got %d\n", i,
+            printf("FAIL (%s): expected erase %d, got %d\n", t[i].name,
                    t[i].conf.erase, conf.erase);
         }
 
         if (t[i].err) {
             if (!err || strncmp(err, t[i].err, strlen(t[i].err))) {
                 nfails++;
-                printf("FAIL (%2d): expected error '%s', got %s\n", i, t[i].err,
-                       err && err[0] ? err : "(nil)");
+                printf("FAIL (%s): expected error '%s', got %s\n", t[i].name,
+                       t[i].err, err && err[0] ? err : "(nil)");
             }
 
         } else {
             if (err) {
                 nfails++;
-                printf("FAIL (%2d): expected no error, got %s\n", i, err);
+                printf("FAIL (%s): expected no error, got %s\n", t[i].name, err);
             }
 
             for (j = 0; t[i].args[j]; j++) {
                 arg = argv[optind++];
                 if (!arg || strcmp(arg, t[i].args[j])) {
                     nfails++;
-                    printf("FAIL (%2d): expected arg %s, got %s\n", i,
+                    printf("FAIL (%s): expected arg %s, got %s\n", t[i].name,
                            t[i].args[j], arg ? arg : "(nil)");
                 }
             }
             /*
             if ((arg = optparse_arg(&options))) {
                 nfails++;
-                printf("FAIL (%2d): expected no more args, got %s\n",
-                       i, arg);
-                       }*/
+                printf("FAIL (%s): expected no more args, got %s\n",
+                       t[i].name, arg);
+            }*/
         }
     }
 
