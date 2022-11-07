@@ -49,12 +49,7 @@ int testsuite_getopt() {
         char *args[8];
         char *err;
     } t[] = {
-        {
-            {"", "--", "foobar", 0},
-            {0, 0, 0, 0, 0},
-            {"foobar", 0},
-            0
-        },
+        {{"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0},
         {{"", "-a", "-b", "-c", "-d", "10", "-e", 0},
          {1, 1, "", 10, 1},
          {0},
@@ -113,7 +108,7 @@ int testsuite_getopt() {
         struct config conf = {0, 0, 0, 0, 0};
 
         int argc = get_argc(t[i].argv);
-        while ((opt = getopt(argc , t[i].argv, "abc:d::")) != -1) {
+        while ((opt = getopt(argc, t[i].argv, "abc:d::")) != -1) {
             switch (opt) {
             case 'a':
                 conf.amend = 1;
