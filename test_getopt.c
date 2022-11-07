@@ -1,5 +1,6 @@
 #include <getopt.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -48,7 +49,12 @@ int testsuite_getopt() {
         char *args[8];
         char *err;
     } t[] = {
-        {{"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0},
+        {
+            {"", "--", "foobar", 0},
+            {0, 0, 0, 0, 0},
+            {"foobar", 0},
+            0
+        },
         {{"", "-a", "-b", "-c", "-d", "10", "-e", 0},
          {1, 1, "", 10, 1},
          {0},
@@ -106,8 +112,8 @@ int testsuite_getopt() {
         char *arg, *err = 0;
         struct config conf = {0, 0, 0, 0, 0};
 
-        while ((opt = getopt(get_argc(t[i].argv), t[i].argv, "abc:d::")) !=
-               -1) {
+        int argc = get_argc(t[i].argv);
+        while ((opt = getopt(argc , t[i].argv, "abc:d::")) != -1) {
             switch (opt) {
             case 'a':
                 conf.amend = 1;
@@ -118,12 +124,18 @@ int testsuite_getopt() {
             case 'c':
                 conf.color = optarg ? optarg : "";
                 break;
-                // case 'd': conf.delay = atoi(optarg); break;
+            case 'd':
+                conf.delay = atoi(optarg);
+                break;
             case 'e':
                 conf.erase++;
                 break;
-            default: // '?' - unknown opt or ':' - missing optarg
-                ;
+            case '?': // unknown opt
+                // TODO
+                break;
+            case ':': // missing optarg
+                // TODO
+                break;
                 //                err = options.errmsg;
             }
         }
