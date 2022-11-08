@@ -35,14 +35,54 @@ static int get_argc(char *argv[]) {
     return p - argv;
 }
 
+struct config {
+    char amend;  // OPTARG_NONE
+    char brief;  // OPTARG_NONE
+    char *color; // OPTARG_OPTIONAL
+    int delay;   // OPTARG_REQUIRED
+    int erase;   // OPTARG_NONE
+};
+
+/**
+ * return err
+ */
+char *parse_option(int argc, char *argv[], struct config *conf) {
+    int opt;
+    char *err = 0;
+
+    optind = 1;
+    while ((opt = getopt(argc, argv, ":abc::d:e")) != -1) {
+        switch (opt) {
+        case 'a':
+            conf->amend = 1;
+            break;
+        case 'b':
+            conf->brief = 1;
+            break;
+        case 'c':
+            conf->color = optarg ? optarg : "";
+            break;
+        case 'd':
+            conf->delay = atoi(optarg);
+            break;
+        case 'e':
+            conf->erase++;
+            break;
+        case '?': // unknown opt
+            err = malloc(strlen(argv[0]) + 256);
+            sprintf(err, "%s: invalid option -- '%c'\n", argv[0], optopt);
+            break;
+        case ':': // missing optarg
+            err = malloc(strlen(argv[0]) + 256);
+            sprintf(err, "%s: missing optarg -- '%c'\n", argv[0], optopt);
+            break;
+        }
+    }
+
+    return err;
+}
+
 int testsuite_getopt() {
-    struct config {
-        char amend;  // OPTARG_NONE
-        char brief;  // OPTARG_NONE
-        char *color; // OPTARG_OPTIONAL
-        int delay;   // OPTARG_REQUIRED
-        int erase;   // OPTARG_NONE
-    };
     struct {
         char *name;
         char *argv[8];
@@ -132,41 +172,11 @@ int testsuite_getopt() {
     int i, nfails = 0;
 
     for (i = 0; i < ntests; i++) {
-        int j, opt;
-        char *arg, *err = 0;
         struct config conf = {0, 0, 0, 0, 0};
 
-        int argc = get_argc(t[i].argv);
         char **argv = t[i].argv;
-
-        optind = 1;
-        while ((opt = getopt(argc, t[i].argv, ":abc::d:e")) != -1) {
-            switch (opt) {
-            case 'a':
-                conf.amend = 1;
-                break;
-            case 'b':
-                conf.brief = 1;
-                break;
-            case 'c':
-                conf.color = optarg ? optarg : "";
-                break;
-            case 'd':
-                conf.delay = atoi(optarg);
-                break;
-            case 'e':
-                conf.erase++;
-                break;
-            case '?': // unknown opt
-                err = malloc(strlen(argv[0]) + 256);
-                sprintf(err, "%s: invalid option -- '%c'\n", argv[0], optopt);
-                break;
-            case ':': // missing optarg
-                err = malloc(strlen(argv[0]) + 256);
-                sprintf(err, "%s: missing optarg -- '%c'\n", argv[0], optopt);
-                break;
-            }
-        }
+        int argc = get_argc(t[i].argv);
+        char *err = parse_option(argc, argv, &conf);
 
         if (conf.amend != t[i].conf.amend) {
             nfails++;
@@ -220,7 +230,8 @@ int testsuite_getopt() {
                        err);
             }
 
-            for (j = 0; t[i].args[j]; j++) {
+            char *arg;
+            for (int j = 0; t[i].args[j]; j++) {
                 arg = argv[optind++];
                 if (!arg || strcmp(arg, t[i].args[j])) {
                     nfails++;
