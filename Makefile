@@ -1,5 +1,5 @@
 TARGET = prog
-SRCS = main.c test_getopt.c util.c
+SRCS = main.c test_getopt.c test_getopt_long.c util.c
 OBJS = $(SRCS:.c=.o)
 
 CFLAGS = -std=c18 -Wall -Wextra -Wpedantic -g
