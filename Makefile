@@ -19,7 +19,7 @@ check: all
 gcov:
 	gcov $(SRCS)
 clean:
-	rm -f $(TARGET) *.o
+	rm -f $(TARGET) *.o *.gcda *.gcno *.gcov
 gen_db:
 	./gen_cmpl_db.sh
 format:
