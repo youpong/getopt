@@ -4,23 +4,44 @@
 #include <string.h>
 #include <unistd.h>
 
-void manual_test_getopt(int argc, char *const argv[]) {
-    int opt;
-    opterr = 0; // 0: suppress error message
-    printf("getopt\n");
+struct config {
+    char amend;  // OPTARG_NONE
+    char brief;  // OPTARG_NONE
+    char *color; // OPTARG_OPTIONAL
+    int delay;   // OPTARG_REQUIRED
+    int erase;   // OPTARG_NONE
+};
 
-    while ((opt = getopt(argc, argv, ":abc:d::")) != -1) {
-        switch (opt) {
-        case '?':
-            printf("%s: invalid option -- '%c'\n", argv[0], optopt);
-            continue;
-        case ':':
-            printf("%s: missing optarg -- '%c'\n", argv[0], optopt);
-            continue;
-        default:
-            printf("%c (%d) = '%s'\n", opt, optind, optarg);
-        }
+static char *config_to_s(struct config *conf) {
+    char *s = malloc(strlen(conf->color) + 1000);
+
+    sprintf(s,
+            "config\n"
+            "    amend: %d\n"
+            "    brief: %d\n"
+            "    color: \"%s\"\n"
+            "    delay: %d\n"
+            "    erase: %d\n",
+            conf->amend, conf->brief, conf->color ? conf->color : "(null)",
+            conf->delay, conf->erase);
+
+    return s;
+}
+
+char *parse_option(int argc, char *const argv[], struct config *conf);
+
+void manual_test_getopt(int argc, char *const argv[]) {
+
+    printf("getopt\n");
+    struct config conf = {0, 0, 0, 0, 0};
+
+    char *err = parse_option(argc, argv, &conf);
+    if (err) {
+        printf("%s\n", err);
     }
+
+    printf("%s", config_to_s(&conf));
+
     printf("optind = %d\n", optind);
     while (argv[optind]) {
         printf("argument: %s\n", argv[optind++]);
@@ -35,21 +56,14 @@ static int get_argc(char *argv[]) {
     return p - argv;
 }
 
-struct config {
-    char amend;  // OPTARG_NONE
-    char brief;  // OPTARG_NONE
-    char *color; // OPTARG_OPTIONAL
-    int delay;   // OPTARG_REQUIRED
-    int erase;   // OPTARG_NONE
-};
-
 /**
  * return err
  */
-char *parse_option(int argc, char *argv[], struct config *conf) {
+char *parse_option(int argc, char *const argv[], struct config *conf) {
     int opt;
     char *err = 0;
 
+    opterr = 0; // 0: suppress error message
     optind = 1;
     while ((opt = getopt(argc, argv, ":abc::d:e")) != -1) {
         switch (opt) {

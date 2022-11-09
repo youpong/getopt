@@ -30,15 +30,15 @@ char *parse_long_option(int argc, char *argv[], struct config *conf) {
     optind = 1;
     static struct option longopts[] = {
         {"amend", no_argument, NULL, 'a'},
-        {"brief", no_argument, NULL, 'b'},
+        {"brief", no_argument, NULL, 0},
         {"color", optional_argument, NULL, 'c'},
         {"delay", required_argument, NULL, 'd'},
-        {"erase", no_argument, NULL, 0},
-        {0,0,0,0},
+        {"erase", no_argument, NULL, 'e'},
+        {0, 0, 0, 0},
     };
     int option_index;
 
-    while ((opt = getopt_long(argc, argv, ":abc::d:", longopts,
+    while ((opt = getopt_long(argc, argv, ":ac::d:e", longopts,
                               &option_index)) != -1) {
         switch (opt) {
         case 'a':
@@ -84,18 +84,18 @@ int testsuite_getopt_long() {
         },
         { "1",
             {"", "-a", "-b", "-c", "-d", "10", "-e", 0},
-            {1, 1, "", 10, 1},
+            {1, 1, "", 10, 0},
             {0},
-            0
+            ": invalid option -- 'e'",
         },
         /* { "2",
             {"", "--amend", "--brief", "--color", "--delay", "10", "--erase",
            0}, {1, 1, "", 10, 1}, {0}, 0},*/
         { "3",
             {"", "-a", "-b", "-cred", "-d", "10", "-e", 0},
-            {1, 1, "red", 10, 1},
+            {1, 1, "red", 10, 0},
             {0},
-            0
+            ": invalid option -- 'e'",            
         },
         { "4",
             {"", "-abcblue", "-d10", "foobar", 0},
@@ -109,7 +109,7 @@ int testsuite_getopt_long() {
          0}, */
         { "6",
             {"", "-eeeeee", 0},
-            {0, 0, 0, 0, 6},
+            {0, 0, 0, 0, 0},
             {0},
             0
         },
