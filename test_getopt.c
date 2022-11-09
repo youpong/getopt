@@ -12,20 +12,15 @@ struct config {
     int erase;   // OPTARG_NONE
 };
 
-static char *config_to_s(struct config *conf) {
-    char *s = malloc(strlen(conf->color) + 1000);
-
-    sprintf(s,
-            "config\n"
-            "    amend: %d\n"
-            "    brief: %d\n"
-            "    color: \"%s\"\n"
-            "    delay: %d\n"
-            "    erase: %d\n",
-            conf->amend, conf->brief, conf->color ? conf->color : "(null)",
-            conf->delay, conf->erase);
-
-    return s;
+static void print_config(struct config *conf) {
+    printf("config\n"
+           "    amend: %d\n"
+           "    brief: %d\n"
+           "    color: \"%s\"\n"
+           "    delay: %d\n"
+           "    erase: %d\n",
+           conf->amend, conf->brief, conf->color ? conf->color : "(null)",
+           conf->delay, conf->erase);
 }
 
 char *parse_option(int argc, char *const argv[], struct config *conf);
@@ -40,7 +35,7 @@ void manual_test_getopt(int argc, char *const argv[]) {
         printf("%s\n", err);
     }
 
-    printf("%s", config_to_s(&conf));
+    print_config(&conf);
 
     printf("optind = %d\n", optind);
     while (argv[optind]) {
