@@ -2,10 +2,10 @@ TARGET = prog
 SRCS = main.c test_getopt.c test_getopt_long.c util.c
 OBJS = $(SRCS:.c=.o)
 
-CFLAGS = -std=c18 -Wall -Wextra -Wpedantic -g
+CFLAGS = -std=c18 -g -Wall -Wextra -Wpedantic
 
 ifeq ($(COVERAGE_TEST), 1)
-	CFLAGS += -fprofile-arcs -ftest-coverage -O0
+	CFLAGS += -O0 -fprofile-arcs -ftest-coverage
 	LIBS += -lgcov
 endif
 
