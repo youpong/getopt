@@ -12,6 +12,8 @@ struct config {
     int erase;   // OPTARG_NONE
 };
 
+char *parse_option(int argc, char *const argv[], struct config *conf);
+
 static void print_config(struct config *conf) {
     printf("config\n"
            "    amend: %d\n"
@@ -23,7 +25,13 @@ static void print_config(struct config *conf) {
            conf->delay, conf->erase);
 }
 
-char *parse_option(int argc, char *const argv[], struct config *conf);
+static int get_argc(char *argv[]) {
+    char **p = argv;
+    while (*p != NULL)
+        p++;
+
+    return p - argv;
+}
 
 void manual_test_getopt(int argc, char *const argv[]) {
 
@@ -41,14 +49,6 @@ void manual_test_getopt(int argc, char *const argv[]) {
     while (argv[optind]) {
         printf("argument: %s\n", argv[optind++]);
     }
-}
-
-static int get_argc(char *argv[]) {
-    char **p = argv;
-    while (*p != NULL)
-        p++;
-
-    return p - argv;
 }
 
 /**
@@ -231,28 +231,27 @@ int testsuite_getopt() {
                 printf("FAIL (%s): expected error '%s', got %s\n", t[i].name,
                        t[i].err, err && err[0] ? err : "(nil)");
             }
-
         } else {
             if (err) {
                 nfails++;
                 printf("FAIL (%s): expected no error, got %s\n", t[i].name,
                        err);
             }
+        }
 
-            char *arg;
-            for (int j = 0; t[i].args[j]; j++) {
-                arg = argv[optind++];
-                if (!arg || strcmp(arg, t[i].args[j])) {
-                    nfails++;
-                    printf("FAIL (%s): expected arg %s, got %s\n", t[i].name,
-                           t[i].args[j], arg ? arg : "(nil)");
-                }
-            }
-            if ((arg = argv[optind])) {
+        char *arg;
+        for (int j = 0; t[i].args[j]; j++) {
+            arg = argv[optind++];
+            if (!arg || strcmp(arg, t[i].args[j])) {
                 nfails++;
-                printf("FAIL (%s): expected no more args, got %s\n", t[i].name,
-                       arg);
+                printf("FAIL (%s): expected arg %s, got %s\n", t[i].name,
+                       t[i].args[j], arg ? arg : "(nil)");
             }
+        }
+        if ((arg = argv[optind])) {
+            nfails++;
+            printf("FAIL (%s): expected no more args, got %s\n", t[i].name,
+                   arg);
         }
     }
 
