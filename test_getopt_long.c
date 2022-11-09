@@ -4,14 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 
-static int get_argc(char *argv[]) {
-    char **p = argv;
-    while (*p != NULL)
-        p++;
-
-    return p - argv;
-}
-
 struct config {
     char amend;  // OPTARG_NONE
     char brief;  // OPTARG_NONE
@@ -20,10 +12,49 @@ struct config {
     int erase;   // OPTARG_NONE
 };
 
+char *parse_long_option(int argc, char *const argv[], struct config *conf);
+
+static void print_config(struct config *conf) {
+    printf("config\n"
+           "    amend: %d\n"
+           "    brief: %d\n"
+           "    color: \"%s\"\n"
+           "    delay: %d\n"
+           "    erase: %d\n",
+           conf->amend, conf->brief, conf->color ? conf->color : "(null)",
+           conf->delay, conf->erase);
+}
+
+static int get_argc(char *argv[]) {
+    char **p = argv;
+    while (*p != NULL)
+        p++;
+
+    return p - argv;
+}
+
+void manual_test_getopt_long(int argc, char *const argv[]) {
+
+    printf("getopt_long\n");
+    struct config conf = {0, 0, 0, 0, 0};
+
+    char *err = parse_long_option(argc, argv, &conf);
+    if (err) {
+        printf("%s\n", err);
+    }
+
+    print_config(&conf);
+
+    printf("optind = %d\n", optind);
+    for (int i = 0; argv[optind + i]; i++) {
+        printf("argument[%d]: %s\n", i, argv[optind + i]);
+    }
+}
+
 /**
  * return err
  */
-char *parse_long_option(int argc, char *argv[], struct config *conf) {
+char *parse_long_option(int argc, char *const argv[], struct config *conf) {
     int opt;
     char *err = 0;
 
