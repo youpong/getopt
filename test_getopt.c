@@ -46,8 +46,8 @@ void manual_test_getopt(int argc, char *const argv[]) {
     print_config(&conf);
 
     printf("optind = %d\n", optind);
-    while (argv[optind]) {
-        printf("argument: %s\n", argv[optind++]);
+    for (int i = 0; argv[optind + i]; i++) {
+        printf("argument[%d]: %s\n", i, argv[optind + i]);
     }
 }
 
