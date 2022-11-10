@@ -36,7 +36,7 @@ static int get_argc(char *argv[]) {
 void manual_test_getopt_long(int argc, char *const argv[]) {
 
     printf("getopt_long\n");
-    struct config conf = {0, 0, 0, 0, 0};
+    struct config conf = {0};
 
     char *err = parse_long_option(argc, argv, &conf);
     if (err) {
@@ -61,7 +61,7 @@ char *parse_long_option(int argc, char *const argv[], struct config *conf) {
     optind = 1;
     static struct option longopts[] = {
         {"amend", no_argument, NULL, 'a'},
-        {"brief", no_argument, NULL, 0},
+        {"brief", no_argument, NULL, 'b'},
         {"color", optional_argument, NULL, 'c'},
         {"delay", required_argument, NULL, 'd'},
         {"erase", no_argument, NULL, 'e'},
@@ -69,9 +69,16 @@ char *parse_long_option(int argc, char *const argv[], struct config *conf) {
     };
     int option_index;
 
-    while ((opt = getopt_long(argc, argv, ":ac::d:e", longopts,
+    while ((opt = getopt_long(argc, argv, ":abc::d:e", longopts,
                               &option_index)) != -1) {
         switch (opt) {
+        case 0:
+            printf("option %s", longopts[option_index].name);
+            if (optarg)
+                printf(" with arg %s", optarg);
+            printf("\n");
+            break;
+
         case 'a':
             conf->amend = 1;
             break;
@@ -111,22 +118,22 @@ int testsuite_getopt_long() {
     } t[] = {
         // clang-format off
         { "0",
-            {"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0
+          {"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0
         },
         { "1",
             {"", "-a", "-b", "-c", "-d", "10", "-e", 0},
-            {1, 1, "", 10, 0},
+            {1, 1, "", 10, 1},
             {0},
-            ": invalid option -- 'e'",
+            NULL,
         },
         /* { "2",
             {"", "--amend", "--brief", "--color", "--delay", "10", "--erase",
            0}, {1, 1, "", 10, 1}, {0}, 0},*/
         { "3",
             {"", "-a", "-b", "-cred", "-d", "10", "-e", 0},
-            {1, 1, "red", 10, 0},
+            {1, 1, "red", 10, 1},
             {0},
-            ": invalid option -- 'e'",            
+            NULL,
         },
         { "4",
             {"", "-abcblue", "-d10", "foobar", 0},
@@ -140,9 +147,9 @@ int testsuite_getopt_long() {
          0}, */
         { "6",
             {"", "-eeeeee", 0},
-            {0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 6},
             {0},
-            0
+            NULL,
         },
         { "7",
             {"", "-d", 0},
@@ -191,7 +198,7 @@ int testsuite_getopt_long() {
     int i, nfails = 0;
 
     for (i = 0; i < ntests; i++) {
-        struct config conf = {0, 0, 0, 0, 0};
+        struct config conf = {0};
 
         char **argv = t[i].argv;
         int argc = get_argc(t[i].argv);
