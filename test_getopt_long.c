@@ -126,9 +126,12 @@ int testsuite_getopt_long() {
             {0},
             NULL,
         },
-        /* { "2",
-            {"", "--amend", "--brief", "--color", "--delay", "10", "--erase",
-           0}, {1, 1, "", 10, 1}, {0}, 0},*/
+        { "2",
+            {"", "--amend", "--brief", "--color", "--delay", "10", "--erase", 0},
+            {1, 1, "", 10, 1},
+            {0},
+            NULL,
+        },
         { "3",
             {"", "-a", "-b", "-cred", "-d", "10", "-e", 0},
             {1, 1, "red", 10, 1},
@@ -141,10 +144,12 @@ int testsuite_getopt_long() {
             {"foobar", 0},
             0
         },
-        /* { "5", {"", "--color=red", "-d", "10", "--", "foobar", 0},
-         {0, 0, "red", 10, 0},
-         {"foobar", 0},
-         0}, */
+        { "5",
+            {"", "--color=red", "-d", "10", "--", "foobar", 0},
+            {0, 0, "red", 10, 0},
+            {"foobar", 0},
+            NULL,
+        },
         { "6",
             {"", "-eeeeee", 0},
             {0, 0, 0, 0, 6},
@@ -187,12 +192,12 @@ int testsuite_getopt_long() {
             {"foo", "bar", "baz", "quux", 0},
             0
         },
-        /* { "12",
-          {"", "foo", "--delay", "1234", "bar", "-cred", 0},
-          {0, 0, "red", 1234, 0},
-          {"foo", "bar", 0},
-          0
-        },*/
+        { "12",
+            {"", "foo", "--delay", "1234", "bar", "-cred", 0},
+            {0, 0, "red", 1234, 0},
+            {"foo", "bar", 0},
+            NULL,
+        },
     }; // clang-format on
     int ntests = sizeof(t) / sizeof(*t);
     int i, nfails = 0;

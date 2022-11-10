@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    if (testsuite_getopt() == 0 && testsuite_getopt_long()) {
+    if (testsuite_getopt() + testsuite_getopt_long() == 0) {
         printf("All test passed\n");
     }
 }
