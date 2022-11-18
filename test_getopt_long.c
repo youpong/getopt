@@ -118,7 +118,10 @@ int testsuite_getopt_long() {
     } t[] = {
         // clang-format off
         { "0",
-          {"", "--", "foobar", 0}, {0, 0, 0, 0, 0}, {"foobar", 0}, 0
+            {"", "--", "foobar", 0},
+            {0, 0, 0, 0, 0},
+            {"foobar", 0},
+            NULL,
         },
         { "1",
             {"", "-a", "-b", "-c", "-d", "10", "-e", 0},
@@ -142,7 +145,7 @@ int testsuite_getopt_long() {
             {"", "-abcblue", "-d10", "foobar", 0},
             {1, 1, "blue", 10, 0},
             {"foobar", 0},
-            0
+            NULL,
         },
         { "5",
             {"", "--color=red", "-d", "10", "--", "foobar", 0},
@@ -157,7 +160,7 @@ int testsuite_getopt_long() {
             NULL,
         },
         { "7",
-            {"", "-d", 0},
+            {"", "--delay", 0},
             {0, 0, 0, 0, 0},
             {0},
             ": missing optarg -- 'd'\n"
@@ -167,9 +170,9 @@ int testsuite_getopt_long() {
             {0, 0, 0, 0, 0},
             {0},
             0
-        },
+        },/* done */
         { "8",
-            {"", "-f", 0},
+            {"", "--foo", "bar", 0},
             {0, 0, 0, 0, 0},
             {0},
             ": invalid option -- 'f'\n"
