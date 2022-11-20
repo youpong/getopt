@@ -9,6 +9,9 @@ int main(int argc, char *argv[]) {
     }
 
     if (testsuite_getopt() + testsuite_getopt_long() == 0) {
-        printf("All test passed\n");
+        printf("All tests passed!\n");
+    } else {
+        printf("Failed to pass all tests.\n");
+        return 1;
     }
 }

@@ -9,6 +9,10 @@ ifeq ($(COVERAGE_TEST), 1)
 	LIBS += -lgcov
 endif
 
+ifeq ($(DEBUG), 1)
+	CFLAGS += -O0 -g
+endif
+
 FORMATTER = clang-format-14 -i
 
 .PHONY: all clean check gcov format
