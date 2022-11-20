@@ -185,7 +185,7 @@ int testsuite_getopt_long() {
             {"", "--foo", "bar", 0},
             {0, 0, 0, 0, 0},
             {0},
-            ": invalid option -- 'f'\n"
+            ": invalid option -- \"foo\"\n"
         },
         { "80",
             {"", "-f", "foo", 0},
