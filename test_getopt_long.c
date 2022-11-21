@@ -173,7 +173,7 @@ int testsuite_getopt_long() {
             {"", "--delay", 0},
             {0, 0, 0, 0, 0},
             {0},
-            ": missing optarg -- 'd'\n"
+            ": missing optarg -- \"delay\"\n"
         },
         { "70",
             {"", "-d", "-e", 0},
@@ -193,6 +193,7 @@ int testsuite_getopt_long() {
             {"foo", 0},
             ": invalid option -- 'f'\n"
         },
+        
         { "10",
             {"", "-", 0},
             {0, 0, 0, 0, 0},
