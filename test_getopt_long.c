@@ -184,7 +184,7 @@ int testsuite_getopt_long() {
         { "8",
             {"", "--foo", "bar", 0},
             {0, 0, 0, 0, 0},
-            {"--foo", "bar", 0},
+            {"bar", 0}, // original: {"--foo", "bar", 0},
             ": invalid option -- 'foo'\n"
         },
         { "80",
@@ -196,7 +196,7 @@ int testsuite_getopt_long() {
         { "9",
             {"", "-x", 0},
             {0, 0, 0, 0, 0},
-            {"-x", 0},
+            {0}, // original: {"-x", 0},
             ": invalid option -- 'x'\n"
         },
         { "10",
@@ -279,21 +279,22 @@ int testsuite_getopt_long() {
                 printf("FAIL (%s): expected no error, got %s\n", t[i].name,
                        err);
             }
+        }
 
-            char *arg;
-            for (int j = 0; t[i].args[j]; j++) {
-                arg = argv[optind++];
-                if (!arg || strcmp(arg, t[i].args[j])) {
-                    nfails++;
-                    printf("FAIL (%s): expected arg %s, got %s\n", t[i].name,
-                           t[i].args[j], arg ? arg : "(nil)");
-                }
-            }
-            if ((arg = argv[optind])) {
+        char *arg;
+        for (int j = 0; t[i].args[j]; j++) {
+            arg = argv[optind++];
+            if (!arg || strcmp(arg, t[i].args[j])) {
                 nfails++;
-                printf("FAIL (%s): expected no more args, got %s\n", t[i].name,
-                       arg);
+                printf("FAIL (%s): expected arg %s, got %s\n", t[i].name,
+                       t[i].args[j], arg ? arg : "(nil)");
             }
+        }
+
+        if ((arg = argv[optind])) {
+            nfails++;
+            printf("FAIL (%s): expected no more args, got %s\n", t[i].name,
+                   arg);
         }
     }
 
