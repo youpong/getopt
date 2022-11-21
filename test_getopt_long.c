@@ -169,12 +169,12 @@ int testsuite_getopt_long() {
             {0},
             NULL,
         },
-        { "7",
+        /* { "7",
             {"", "--delay", 0},
             {0, 0, 0, 0, 0},
             {0},
             ": missing optarg -- \"delay\"\n"
-        },
+            },*/
         { "70",
             {"", "-d", "-e", 0},
             {0, 0, 0, 0, 0},
@@ -184,8 +184,8 @@ int testsuite_getopt_long() {
         { "8",
             {"", "--foo", "bar", 0},
             {0, 0, 0, 0, 0},
-            {0},
-            ": invalid option -- \"foo\"\n"
+            {"--foo", "bar", 0},
+            ": invalid option -- 'foo'\n"
         },
         { "80",
             {"", "-f", "foo", 0},
@@ -193,18 +193,23 @@ int testsuite_getopt_long() {
             {"foo", 0},
             ": invalid option -- 'f'\n"
         },
-        
+        { "9",
+            {"", "-x", 0},
+            {0, 0, 0, 0, 0},
+            {"-x", 0},
+            ": invalid option -- 'x'\n"
+        },
         { "10",
             {"", "-", 0},
             {0, 0, 0, 0, 0},
             {"-", 0},
-            0
+            NULL
         },
         { "11",
             {"", "-e", "foo", "bar", "baz", "-a", "quux", 0},
             {1, 0, 0, 0, 1},
             {"foo", "bar", "baz", "quux", 0},
-            0
+            NULL
         },
         { "12",
             {"", "foo", "--delay", "1234", "bar", "-cred", 0},
