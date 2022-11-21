@@ -102,7 +102,7 @@ char *parse_long_option(int argc, char *const argv[], struct config *conf) {
         case '?': // unknown opt
             err = malloc(strlen(argv[0]) + 256);
             if (optopt == 0) { // long option
-                sprintf(err, "%s: invalid option -- \"%s\"\n", argv[0],
+                sprintf(err, "%s: invalid option -- '%s'\n", argv[0],
                         argv[optind - 1] + 2);
             } else {
                 sprintf(err, "%s: invalid option -- '%c'\n", argv[0], optopt);
